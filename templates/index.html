@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
 	<script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 </head>
 
@@ -37,11 +38,21 @@
 					Site</a> and it'll send a push message for you, using the application
 				server keys on the site - so make sure they match.</p>
 			<pre><code class="js-subscription-json"></code></pre>
+
+			<form action="/push/" method="POST">
+				<input required type="hidden" name="sub_token" id="sub_token">
+				<input required type="text" name="message" id="message">
+				<button type="submit">
+					PUSH
+				</button>
+			</form>
 		</section>
 	</main>
 
 	<script src="{{ url_for('static',filename='main.js') }}"></script>
 	<script src="https://code.getmdl.io/1.2.1/material.min.js"></script>
 </body>
+
+
 
 </html>
