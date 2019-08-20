@@ -1,6 +1,6 @@
 'use strict';
 
-const applicationServerPublicKey = "BLAYetruk-tBzJVU4wfiYyhb4Pwh4_GaaAwOKr2xkxQUdNA9eU-_NV8QjfppjtOsTwvmc54zPJ3bKwXD7EWKxVc";
+const applicationServerPublicKey = "BN4BnHEmqGkZN_Oi71tFEjTJILdAspeFWMIMvjP1ZHa-fWL-iRP3_OD0UZ9RJ4uxDDIOJhyoZu_P G9U6JJzo1AM";
 var sub_token = '';
 const pushButton = document.querySelector('.js-push-btn');
 
@@ -51,6 +51,7 @@ function updateSubscriptionOnServer(subscription) {
 		subscriptionJson.textContent = JSON.stringify(subscription);
 		sub_token.value = JSON.stringify(subscription);
 		subscriptionDetails.classList.remove('is-invisible');
+		console.log("subscribe",JSON.stringify(subscription));
 	} else {
 		subscriptionDetails.classList.add('is-invisible');
 	}
