@@ -2,8 +2,6 @@
 
 /* eslint-disable max-len */
 
-const applicationServerPublicKey = "BN4BnHEmqGkZN_Oi71tFEjTJILdAspeFWMIMvjP1ZHa-fWL-iRP3_OD0UZ9RJ4uxDDIOJhyoZu_P G9U6JJzo1AM";
-
 /* eslint-enable max-len */
 
 function urlB64ToUint8Array(base64String) {
@@ -47,7 +45,7 @@ self.addEventListener('notificationclick', function(event) {
 
 self.addEventListener('pushsubscriptionchange', function(event) {
   console.log('[Service Worker]: \'pushsubscriptionchange\' event fired.');
-  const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
+  const applicationServerKey = urlB64ToUint8Array(document.applicationServerPublicKey);
   event.waitUntil(
     self.registration.pushManager.subscribe({
       userVisibleOnly: true,

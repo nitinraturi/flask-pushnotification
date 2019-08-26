@@ -36,6 +36,10 @@ def subscription():
 def push_to_all_users():
     token = request.form.get('sub_token')
     message = request.form.get('message')
+
+    token = '{"endpoint":"https://fcm.googleapis.com/fcm/send/cn2zZ1wyZmU:APA91bEBokYMmP36-gLljRWai79Uc6WOxqjum1ztj-Wm6JTkIf6DbtO05R2uXe7O1RfKYZqp0uRZR3K36-7UP-X3FeVR2Wy4NIGYHjiVLSWML8ETGdHA8UNhv5hMJWI7WJcEv1tpce0v","expirationTime":null,"keys":{"p256dh":"BDRC9vUDGoGzt8gefuR5qTPsT3_st_bU8sPj970T5xmY7RjtAVf6Yof1AwS3D6p3U3JmAqpukF7V_VC5uQw5Nec","auth":"MJNVm_d4GJblbEb9PuirJA"}}'
+    message = "hello"
+
     print("token",token)
     print("message",message)
     try:
