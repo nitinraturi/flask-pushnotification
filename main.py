@@ -1,5 +1,6 @@
 import logging
 import json, os
+from solidwebpush import Pusher
 
 from flask import request, Response, render_template, Blueprint, redirect, url_for
 from flask import jsonify
@@ -36,10 +37,6 @@ def subscription():
 def push_to_all_users():
     token = request.form.get('sub_token')
     message = request.form.get('message')
-
-    token = '{"endpoint":"https://fcm.googleapis.com/fcm/send/cn2zZ1wyZmU:APA91bEBokYMmP36-gLljRWai79Uc6WOxqjum1ztj-Wm6JTkIf6DbtO05R2uXe7O1RfKYZqp0uRZR3K36-7UP-X3FeVR2Wy4NIGYHjiVLSWML8ETGdHA8UNhv5hMJWI7WJcEv1tpce0v","expirationTime":null,"keys":{"p256dh":"BDRC9vUDGoGzt8gefuR5qTPsT3_st_bU8sPj970T5xmY7RjtAVf6Yof1AwS3D6p3U3JmAqpukF7V_VC5uQw5Nec","auth":"MJNVm_d4GJblbEb9PuirJA"}}'
-    message = "hello"
-
     print("token",token)
     print("message",message)
     try:
@@ -48,3 +45,24 @@ def push_to_all_users():
         print("error",e)
 
     return redirect(url_for('main.index'))
+
+
+@main.route("/push_v1/",methods=['POST'])
+def push_v1():
+    pusher = Pusher()
+    message = "Push Test v1"
+    print("is_json",request.is_json)
+
+    if not request.json or not request.json.get('sub_token'):
+        return jsonify({'failed':1})
+
+    print("request.json",request.json)
+
+    token = request.json.get('sub_token')
+    try:
+        pusher.sendNotification(token, message)
+        # send_web_push(json.loads(token), message)
+        return jsonify({'success':1})
+    except Exception as e:
+        print("error",e)
+        return jsonify({'failed':str(e)})
