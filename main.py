@@ -44,3 +44,23 @@ def push_to_all_users():
         print("error",e)
 
     return redirect(url_for('main.index'))
+
+
+@main.route("/push_v1/",methods=['POST'])
+def push_v1():
+    message = "Push Test v1"
+    print("is_json",request.is_json)
+    
+    if not request.json or not request.json.get('sub_token'):
+        return jsonify({'failed':1})
+
+    print("request.json",request.json)
+
+    token = request.json.get('sub_token')
+    try:
+        send_web_push(json.loads(token), message)
+        return jsonify({'success':1})
+    except Exception as e:
+        print("error",e)
+
+    return jsonify({'failed':str(e)})

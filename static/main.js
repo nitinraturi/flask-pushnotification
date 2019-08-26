@@ -1,7 +1,6 @@
 'use strict';
 
-const applicationServerPublicKey = "BN4BnHEmqGkZN_Oi71tFEjTJILdAspeFWMIMvjP1ZHa-fWL-iRP3_OD0UZ9RJ4uxDDIOJhyoZu_P G9U6JJzo1AM";
-var sub_token = '';
+const applicationServerPublicKey = "BA0I0zCKG13_vN7T3I310T_Mkg0D6IpVc_t6lsSxfCqbvDrirGI16gef0Uks52pAjGXq02LpyNTG dYnzr7gIwhs";
 const pushButton = document.querySelector('.js-push-btn');
 
 let isSubscribed = false;
@@ -43,15 +42,12 @@ function updateSubscriptionOnServer(subscription) {
 	// TODO: Send subscription to application server
 
 	const subscriptionJson = document.querySelector('.js-subscription-json');
-	var sub_token = document.querySelector('#sub_token');
 	const subscriptionDetails =
 		document.querySelector('.js-subscription-details');
 
 	if (subscription) {
 		subscriptionJson.textContent = JSON.stringify(subscription);
-		sub_token.value = JSON.stringify(subscription);
 		subscriptionDetails.classList.remove('is-invisible');
-		console.log("subscribe",JSON.stringify(subscription));
 	} else {
 		subscriptionDetails.classList.add('is-invisible');
 	}
@@ -67,7 +63,7 @@ function subscribeUser() {
 			console.log('User is subscribed.');
 
 			updateSubscriptionOnServer(subscription);
-			sub_token = subscription;
+			localStorage.setItem('sub_token',JSON.stringify(subscription));
 			isSubscribed = true;
 
 			updateBtn();
@@ -76,7 +72,7 @@ function subscribeUser() {
 			console.log('Failed to subscribe the user: ', err);
 			updateBtn();
 		});
-}push_message
+}
 
 function unsubscribeUser() {
 	swRegistration.pushManager.getSubscription()
@@ -144,10 +140,18 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
 }
 
 function push_message() {
-	console.log("sub_token", sub_token);
+	console.log("sub_token", localStorage.getItem('sub_token'));
 	$.ajax({
 		type: "POST",
-		url: "/push/",
-		data: JSON.stringify({'token':sub_token}),
+		url: "/push_v1/",
+		contentType: 'application/json; charset=utf-8',
+		dataType:'json',
+		data: JSON.stringify({'sub_token':localStorage.getItem('sub_token')}),
+		success: function( data ){
+			console.log("success",data);
+    },
+    error: function( jqXhr, textStatus, errorThrown ){
+        console.log("error",errorThrown);
+    }
 	});
 }
