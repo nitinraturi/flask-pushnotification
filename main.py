@@ -1,25 +1,35 @@
 import logging
 import json, os
-from solidwebpush import Pusher
 
-from flask import request, Response, render_template, Blueprint, redirect, url_for
-from flask import jsonify
+from flask import request, Response, render_template, jsonify, Flask
+from pywebpush import webpush, WebPushException
 
-from flask_api import FlaskAPI
-from flask_sqlalchemy import SQLAlchemy
-from settings import *
+app = Flask(__name__)
+app.config['SECRET_KEY'] = '9OLWxND4o83j4K4iuopO'
 
-from push import send_web_push
-from db import *
+DER_BASE64_ENCODED_PRIVATE_KEY_FILE_PATH = os.path.join(os.getcwd(),"private_key.txt")
+DER_BASE64_ENCODED_PUBLIC_KEY_FILE_PATH = os.path.join(os.getcwd(),"public_key.txt")
 
-main = Blueprint('main', __name__)
+VAPID_PRIVATE_KEY = open(DER_BASE64_ENCODED_PRIVATE_KEY_FILE_PATH, "r+").readline().strip("\n")
+VAPID_PUBLIC_KEY = open(DER_BASE64_ENCODED_PUBLIC_KEY_FILE_PATH, "r+").read().strip("\n")
 
+VAPID_CLAIMS = {
+"sub": "mailto:develop@raturi.in"
+}
 
-@main.route('/')
+def send_web_push(subscription_information, message_body):
+    return webpush(
+        subscription_info=subscription_information,
+        data=message_body,
+        vapid_private_key=VAPID_PRIVATE_KEY,
+        vapid_claims=VAPID_CLAIMS
+    )
+
+@app.route('/')
 def index():
     return render_template('index.html')
 
-@main.route("/subscription/", methods=["GET", "POST"])
+@app.route("/subscription/", methods=["GET", "POST"])
 def subscription():
     """
         POST creates a subscription
@@ -33,23 +43,8 @@ def subscription():
     subscription_token = request.get_json("subscription_token")
     return Response(status=201, mimetype="application/json")
 
-@main.route("/push/", methods=["POST"])
-def push_to_all_users():
-    token = request.form.get('sub_token')
-    message = request.form.get('message')
-    print("token",token)
-    print("message",message)
-    try:
-        send_web_push(json.loads(token), message)
-    except Exception as e:
-        print("error",e)
-
-    return redirect(url_for('main.index'))
-
-
-@main.route("/push_v1/",methods=['POST'])
+@app.route("/push_v1/",methods=['POST'])
 def push_v1():
-    pusher = Pusher()
     message = "Push Test v1"
     print("is_json",request.is_json)
 
@@ -60,9 +55,12 @@ def push_v1():
 
     token = request.json.get('sub_token')
     try:
-        pusher.sendNotification(token, message)
-        # send_web_push(json.loads(token), message)
+        token = json.loads(token)
+        send_web_push(token, message)
         return jsonify({'success':1})
     except Exception as e:
         print("error",e)
         return jsonify({'failed':str(e)})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0",port=8080)

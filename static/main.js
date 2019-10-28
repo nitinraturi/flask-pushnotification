@@ -1,6 +1,6 @@
 'use strict';
 
-const applicationServerPublicKey = "BNbxGYNMhEIi9zrneh7mqV4oUanjLUK3m+mYZBc62frMKrEoMk88r3Lk596T0ck9xlT+aok0fO1KXBLV4+XqxYM=";
+// const applicationServerPublicKey = "BNbxGYNMhEIi9zrneh7mqV4oUanjLUK3m+mYZBc62frMKrEoMk88r3Lk596T0ck9xlT+aok0fO1KXBLV4+XqxYM=";
 const pushButton = document.querySelector('.js-push-btn');
 
 let isSubscribed = false;
@@ -54,7 +54,7 @@ function updateSubscriptionOnServer(subscription) {
 }
 
 function subscribeUser() {
-	// const applicationServerPublicKey = localStorage.getItem('applicationServerPublicKey');
+	const applicationServerPublicKey = localStorage.getItem('applicationServerPublicKey');
 	const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
 	swRegistration.pushManager.subscribe({
 			userVisibleOnly: true,
@@ -157,13 +157,13 @@ function push_message() {
 	});
 }
 
-// $(document).ready(function(){
-// 	$.ajax({
-// 		type:"GET",
-// 		url:'/subscription/',
-// 		success:function(response){
-// 			console.log("response",response);
-// 			localStorage.setItem('applicationServerPublicKey',response.public_key);
-// 		}
-// 	})
-// });
+$(document).ready(function(){
+	$.ajax({
+		type:"GET",
+		url:'/subscription/',
+		success:function(response){
+			console.log("response",response);
+			localStorage.setItem('applicationServerPublicKey',response.public_key);
+		}
+	})
+});
