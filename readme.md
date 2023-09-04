@@ -1,4 +1,4 @@
 # Documentation
 
 * Follow the article:
-* https://raturi.in/blog/webpush-notification-using-python-and-flask/
+* https://tech.raturi.in/webpush-notification-using-python-and-flask/
